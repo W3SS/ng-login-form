@@ -16,6 +16,6 @@ function authAction(type: string) {
   });
 }
 
-export const login: (payload: UserCredentials) => authActionType = authAction(LOGIN_START);
-export const loginSuccess: () => authActionType = authAction(LOGIN_SUCCESS);
-export const loginError: (payload: Array<string>) => authActionType = authAction(LOGIN_ERROR);
+export const login: (payload: { user: UserCredentials }) => authActionType = authAction(LOGIN_START);
+export const loginSuccess: (payload: { email: string }) => authActionType = authAction(LOGIN_SUCCESS);
+export const loginError: (payload: { errors: Array<string> }) => authActionType = authAction(LOGIN_ERROR);

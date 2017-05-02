@@ -30,3 +30,6 @@ const context = require.context('./', true, /\.spec\.ts$/);
 context.keys().map(context);
 // Finally, start Karma to run the tests.
 __karma__.start();
+
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/pluck';

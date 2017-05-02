@@ -4,13 +4,15 @@ import { LOGIN_START, LOGIN_SUCCESS, LOGIN_ERROR } from './authentication.action
 export interface AuthenticationState {
   pending: boolean;
   isLogged: boolean;
-  errors: Array<string>
+  errors: Array<string>,
+  email: string,
 };
 
-const defaultState: AuthenticationState = {
+export const defaultState: AuthenticationState = {
   pending: false,
   isLogged: false,
   errors: [],
+  email: '',
 };
 
 export function authenticationReducer(state = defaultState, { type, payload }: Action): AuthenticationState {
@@ -20,6 +22,7 @@ export function authenticationReducer(state = defaultState, { type, payload }: A
         ...state,
         pending: true,
         isLogged: false,
+        email: '',
       };
 
     case LOGIN_SUCCESS:
@@ -28,14 +31,15 @@ export function authenticationReducer(state = defaultState, { type, payload }: A
         pending: false,
         isLogged: true,
         errors: [],
+        email: payload.email
       };
 
     case LOGIN_ERROR:
       return {
         ...state,
         pending: false,
-        isLogged: true,
-        errors: payload,
+        isLogged: false,
+        errors: payload.errors,
       };
 
     default:

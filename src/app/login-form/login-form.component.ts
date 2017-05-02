@@ -13,10 +13,12 @@ const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$/;
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css']
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent {
   public errors: Observable<string[]>;
   public loginForm: FormGroup;
   public formSubmitted = false;
+  public isLogged: Observable<boolean>;
+  public loggedEmail: Observable<string>;
 
   public formError = (label: string) =>
     (errorField: string): boolean =>
@@ -31,7 +33,10 @@ export class LoginFormComponent implements OnInit {
     private store: Store<AppState>,
     private fb: FormBuilder,
   ) {
-    this.errors = store.select('auth').pluck('errors');
+    const authStore = store.select('auth');
+    this.errors = authStore.pluck('errors');
+    this.isLogged = authStore.pluck('isLogged');
+    this.loggedEmail = authStore.pluck('email');
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(emailRegex)] ],
@@ -39,14 +44,10 @@ export class LoginFormComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-
-  }
-
   onSubmit() {
     this.formSubmitted = true;
     if (this.loginForm.valid) {
-      this.store.dispatch(login(this.loginForm.value));
+      this.store.dispatch(login({ user: this.loginForm.value }));
     }
   }
 
