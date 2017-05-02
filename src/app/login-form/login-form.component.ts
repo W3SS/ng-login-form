@@ -11,7 +11,7 @@ const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$/;
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.css']
+  styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent {
   public errors: Observable<string[]>;
@@ -20,10 +20,12 @@ export class LoginFormComponent {
   public isLogged: Observable<boolean>;
   public loggedEmail: Observable<string>;
 
+  public isError = (label: string) =>
+    this.formSubmitted &&
+    this.loginForm.controls[label].errors;
   public formError = (label: string) =>
     (errorField: string): boolean =>
-      this.formSubmitted &&
-      this.loginForm.controls[label].errors &&
+      this.isError(label) &&
       !!this.loginForm.controls[label].errors[errorField];
 
   public emailError = this.formError('email');

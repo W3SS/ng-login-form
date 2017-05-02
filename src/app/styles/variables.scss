@@ -1,0 +1,21 @@
+$main-red: #d50032;
+$border-color: #b0b0b0;
+$white: #fff;
+
+$screen-sm-min: 768px;
+$screen-xs-max: ($screen-sm-min - 1);
+$screen-md-min: 992px;
+$screen-sm-max: ($screen-md-min - 1);
+$screen-lg-min: 1200px;
+$screen-md-max: ($screen-lg-min - 1);
+
+@mixin login-font {
+  font-size: 18px;
+  font-family: CircularWeb, sans-serif;
+}
+
+@mixin bold-login-font {
+  @include login-font;
+  font-weight: bold;
+  color: white;
+}
