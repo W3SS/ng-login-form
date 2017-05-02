@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { LOGIN_START, LOGIN_SUCCESS, LOGIN_ERROR } from './authentication.actions';
 
-interface AuthenticationState {
+export interface AuthenticationState {
   pending: boolean;
   isLogged: boolean;
   errors: Array<string>
@@ -35,7 +35,7 @@ export function authenticationReducer(state = defaultState, { type, payload }: A
         ...state,
         pending: false,
         isLogged: true,
-        errors: payload.errors,
+        errors: payload,
       };
 
     default:

@@ -11,11 +11,9 @@ export class AuthenticationEffects {
   @Effect() login$ = this.actions$
     .ofType(LOGIN_START)
     .pluck('payload')
-    .map(({ email, password }) => {
-      if (email === 'test@test.pl' && password === 'Password1') {
-        return loginSuccess();
-      } else {
-        return loginError(['Invalid credentails'])
-      }
-    })
+    .map(({ email, password }) =>
+      email === 'test@test.pl' && password === 'Password1' ?
+      loginSuccess() :
+      loginError(['Invalid credentials'])
+    )
 }
