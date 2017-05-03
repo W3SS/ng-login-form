@@ -15,6 +15,6 @@ export class AuthenticationEffects {
     .map(({ email, password }) =>
       email === 'test@test.pl' && password === 'Password1' ?
       loginSuccess({ email }) :
-      loginError({ errors: ['Invalid credentials'] })
+      loginError({ errors: ['Invalid email or password'] })
     )
 }

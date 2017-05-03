@@ -29,7 +29,7 @@ describe('AuthenticationEffects', () => {
     runner.queue(login({ user: { email: 'wrong@email.pl', password: 'wrongpassword' } }));
 
     authenticationEffects.login$.subscribe(result => {
-      expect(result).toEqual(loginError({ errors: ['Invalid credentials'] }));
+      expect(result).toEqual(loginError({ errors: ['Invalid email or password'] }));
     });
   });
 

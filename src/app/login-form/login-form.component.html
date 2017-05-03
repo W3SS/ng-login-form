@@ -1,7 +1,7 @@
 <div class="container">
 
   <div *ngIf="isLogged | async" class="logged-in">
-    <div> {{ loggedEmail | async }} You have been successfully logged in! </div>
+    <div> {{ loggedEmail | async }} Login successful. </div>
   </div>
 
   <div *ngIf="!(isLogged | async)">
@@ -29,7 +29,7 @@
         >
         <p class="error" *ngIf="passwordError('required')">Password is required</p>
         <p class="error" *ngIf="passwordError('pattern')">
-          Password must be at least 6 characters long and contain at least 1 number, 1 lowercase letter and 1 uppercase letter.
+          Password must be at least 6 characters long and contain at least 1 number, 1 lowercase letter and 1 uppercase letter
         </p>
       </div>
       <div *ngIf="(errors | async).length" class="height-auto">
