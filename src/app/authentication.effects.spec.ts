@@ -6,7 +6,7 @@ import { login, loginError, loginSuccess } from "./authentication.actions";
 let runner: EffectsRunner;
 let authenticationEffects: AuthenticationEffects;
 
-fdescribe('AuthenticationEffects', () => {
+describe('AuthenticationEffects', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       EffectsTestingModule

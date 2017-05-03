@@ -1,7 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { CommonModule } from "@angular/common";
 import { StoreModule } from '@ngrx/store';
 import { authenticationReducer, AuthenticationState } from './authentication.reducer';
@@ -27,8 +25,6 @@ export interface AppState {
   ],
   imports: [
     BrowserModule,
-    FormsModule,
-    HttpModule,
     CommonModule,
     StoreModule.provideStore({ auth: authenticationReducer }),
     EffectsModule.run(AuthenticationEffects),

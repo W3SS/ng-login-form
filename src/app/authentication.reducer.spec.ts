@@ -1,7 +1,7 @@
 import { authenticationReducer, defaultState } from "./authentication.reducer";
 import { login, loginSuccess, loginError } from "./authentication.actions";
 
-fdescribe('authenticationReducer reducer', () => {
+describe('authenticationReducer reducer', () => {
   const user = {
     email: 'mateusz@tadeusz.com',
     password: '1234',
