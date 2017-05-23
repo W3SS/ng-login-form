@@ -55,7 +55,7 @@ describe('LoginFormComponent', () => {
 
   describe('when submit button is clicked', () => {
     beforeEach(() => {
-      fixture.debugElement.queryAll(By.css('form'))[0].triggerEventHandler('submit', new Event('submit'));
+      fixture.debugElement.queryAll(By.css('input[type="submit"]'))[0].triggerEventHandler('click', new Event('click'));
       fixture.detectChanges();
     });
 
@@ -104,7 +104,7 @@ describe('LoginFormComponent', () => {
           .query(By.css(`input[name="email"]`));
         input.nativeElement.value = value;
         input.triggerEventHandler('input', { target: { value } });
-        fixture.debugElement.queryAll(By.css('form'))[0].triggerEventHandler('submit', new Event('submit'));
+        fixture.debugElement.queryAll(By.css('input[type="submit"]'))[0].triggerEventHandler('click', new Event('click'));
         fixture.detectChanges();
       });
 
@@ -136,7 +136,7 @@ describe('LoginFormComponent', () => {
           .query(By.css(`input[name="password"]`));
         input.nativeElement.value = value;
         input.triggerEventHandler('input', { target: { value } });
-        fixture.debugElement.queryAll(By.css('form'))[0].triggerEventHandler('submit', new Event('submit'));
+        fixture.debugElement.queryAll(By.css('input[type="submit"]'))[0].triggerEventHandler('click', new Event('click'));
         fixture.detectChanges();
       });
 
@@ -175,7 +175,7 @@ describe('LoginFormComponent', () => {
         .query(By.css(`input[name="password"]`));
       passwordInput.nativeElement.value = password;
       passwordInput.triggerEventHandler('input', { target: { value: password } });
-      fixture.debugElement.queryAll(By.css('form'))[0].triggerEventHandler('submit', new Event('submit'));
+      fixture.debugElement.queryAll(By.css('input[type="submit"]'))[0].triggerEventHandler('click', new Event('click'));
       fixture.detectChanges();
     });
 

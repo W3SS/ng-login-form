@@ -4,7 +4,11 @@
     <div> {{ loggedEmail | async }} Login successful. </div>
   </div>
 
-  <div *ngIf="!(isLogged | async)">
+  <div *ngIf="isPending | async" class="loading-container">
+    <app-loading-spinner></app-loading-spinner>
+  </div>
+
+  <div *ngIf="!(isLogged | async)" [class.pending]="isPending | async">
     <form [formGroup]="loginForm" novalidate>
       <h2>Login</h2>
       <div class="input-container">
@@ -14,10 +18,10 @@
           name="email"
           placeholder="E-mail"
           formControlName="email"
-          [class.invalid]="isError('email') | async"
+          [class.invalid]="(isError | async)?.email"
         >
-        <p class="error" *ngIf="emailError('required') | async">E-mail is required</p>
-        <p class="error" *ngIf="emailError('pattern') | async">E-mail is invalid</p>
+        <p class="error" *ngIf="(isError | async)?.email?.required">E-mail is required</p>
+        <p class="error" *ngIf="(isError | async)?.email?.pattern">E-mail is invalid</p>
       </div>
       <div class="input-container">
         <input
@@ -25,10 +29,10 @@
           name="password"
           placeholder="Password"
           formControlName="password"
-          [class.invalid]="isError('password') | async"
+          [class.invalid]="(isError | async)?.password"
         >
-        <p class="error" *ngIf="passwordError('required') | async">Password is required</p>
-        <p class="error" *ngIf="passwordError('pattern') | async">
+        <p class="error" *ngIf="(isError | async)?.password?.required">Password is required</p>
+        <p class="error" *ngIf="(isError | async)?.password?.pattern">
           Password must be at least 6 characters long and contain at least 1 number, 1 lowercase letter and 1 uppercase letter
         </p>
       </div>

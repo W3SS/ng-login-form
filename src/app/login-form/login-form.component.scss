@@ -54,7 +54,7 @@
       }
 
       &.invalid {
-        box-shadow: inset 0px -10px 0px 0px $main-red;
+        color: $main-red;
       }
     }
   }
@@ -80,9 +80,12 @@
 
   .error {
     @include login-font;
-    color: $main-red;
-    margin: 2px 0px 10px 2px;
+    color: white;
+    margin: 0px 0px 10px 0px;
     font-size: 14px;
+    background-color: $main-red;
+    padding: 5px;
+    width: 100%;
   }
 
   .logged-in {
@@ -94,4 +97,16 @@
   .height-auto {
     height: auto;
   }
+}
+
+.loading-container {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(100, 100, 100, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }

@@ -6,75 +6,57 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {login, loginError} from '../authentication.actions';
 import {Subject} from "rxjs/Subject";
 
-import 'rxjs/add/operator/mapTo';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/do';
-
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$/;
+
+function convertErrors(controls) {
+  return Object.keys(controls)
+    .reduce((acc, curr) => ({ ...acc, [curr]: controls[curr].errors}), {})
+}
 
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.scss'],
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent {
   public errors: Observable<string[]>;
   public loginForm: FormGroup;
   public formSubmitted: Observable<boolean>;
   public isLogged: Observable<boolean>;
   public loggedEmail: Observable<string>;
   public onSubmit$ = new Subject<any>();
-
   public isError: any;
-
-  public formError: any;
-  public emailError: any;
-  passwordError: any;
-
-
+  public isPending: Observable<boolean>;
 
   constructor(
-    private store: Store<AppState>,
-    private fb: FormBuilder,
-    private change: ChangeDetectorRef
+    store: Store<AppState>,
+    fb: FormBuilder,
   ) {
     const authStore = store.select('auth');
     this.errors = authStore.pluck('errors');
     this.isLogged = authStore.pluck('isLogged');
     this.loggedEmail = authStore.pluck('email');
+    this.isPending = authStore.pluck('pending');
 
-    this.loginForm = this.fb.group({
+    this.loginForm = fb.group({
       email: ['', [Validators.required, Validators.pattern(emailRegex)] ],
       password: ['', [Validators.required, Validators.pattern(passwordRegex)] ],
     });
 
-
-
-
-  }
-
-  ngOnInit() {
     this.formSubmitted = this.onSubmit$.mapTo(true);
 
     this.onSubmit$
-      .map(() => login({ user: this.loginForm.value }))
       .filter(() => this.loginForm.valid)
-      .subscribe(this.store.dispatch.bind(this.store));
+      .withLatestFrom(this.loginForm.valueChanges, (_, formValue) => formValue)
+      .map(formValue => login({ user: formValue }))
+      .subscribe(store.dispatch.bind(store));
 
-    this.isError = (label: string) =>
-      this.formSubmitted.map(() => !!this.loginForm.controls[label].errors)
-        .do(() => this.change.markForCheck())
-        .do(val => console.log(val, label, this.loginForm.controls[label].errors));
+    this.isError = this.loginForm.valueChanges
+      .startWith(null)
+      .combineLatest(this.formSubmitted)
+      .map(() => convertErrors(this.loginForm.controls));
 
-    this.formError = (label: string) =>
-      (errorField: string): Observable<boolean> =>
-        this.isError(label).map(() =>
-          !!this.loginForm.controls[label].errors[errorField]);
-
-  this.emailError = this.formError('email');
-  this.passwordError = this.formError('password');
   }
 
 }

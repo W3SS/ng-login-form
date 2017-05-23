@@ -10,9 +10,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { LoginFormComponent } from './login-form/login-form.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/pluck';
 
 export interface AppState {
   auth: AuthenticationState;
@@ -21,7 +20,8 @@ export interface AppState {
 @NgModule({
   declarations: [
     AppComponent,
-    LoginFormComponent
+    LoginFormComponent,
+    LoadingSpinnerComponent
   ],
   imports: [
     BrowserModule,

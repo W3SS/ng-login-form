@@ -63,3 +63,9 @@ describe('authenticationReducer reducer', () => {
     });
   });
 });
+
+type User = {
+  name: string;
+}
+
+const asd: User = { name: 'asd'};
