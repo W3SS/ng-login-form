@@ -7,6 +7,7 @@ import { Store } from "@ngrx/store";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { By } from "@angular/platform-browser";
 import {login} from "../authentication.actions";
+import { map, path, pipe, curry, __, head } from 'ramda';
 
 describe('LoginFormComponent', () => {
   let component: LoginFormComponent;
@@ -21,6 +22,20 @@ describe('LoginFormComponent', () => {
     select: jasmine.createSpy('select').and.returnValue(authStoreSubject),
     dispatch: jasmine.createSpy('dispatch'),
   };
+
+  const getAllByCss = curry(
+    (selector: string) =>
+      (fixture: ComponentFixture<LoginFormComponent>) =>
+        fixture
+          .debugElement
+          .queryAll(By.css(selector))
+  );
+
+  const getByCss = head(getAllByCss(__, __))
+
+  const getErrors = getAllByCss('.height-auto .error');
+  const getInput = getByCss('input[type="submit"]');
+  const getTextContent = map(path(['nativeElement', 'textContent']));
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,17 +60,17 @@ describe('LoginFormComponent', () => {
   });
 
   it('should get errors from store', () => {
-    const errors = fixture
-      .debugElement
-      .queryAll(By.css('.height-auto .error'))
-      .map(item => item.nativeElement.textContent);
+    const errors = pipe(
+      getErrors,
+      getTextContent
+    )(fixture);
 
     authStore.errors.forEach(errorText => expect(errors.includes(errorText)).toBeTruthy());
   });
 
   describe('when submit button is clicked', () => {
     beforeEach(() => {
-      fixture.debugElement.queryAll(By.css('input[type="submit"]'))[0].triggerEventHandler('click', new Event('click'));
+      getInput.triggerEventHandler('click', new Event('click'));
       fixture.detectChanges();
     });
 
