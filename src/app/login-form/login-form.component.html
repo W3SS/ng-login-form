@@ -18,10 +18,10 @@
           name="email"
           placeholder="E-mail"
           formControlName="email"
-          [class.invalid]="(isError | async)?.email"
+          [class.invalid]="isError('email')"
         >
-        <p class="error" *ngIf="(isError | async)?.email?.required">E-mail is required</p>
-        <p class="error" *ngIf="(isError | async)?.email?.pattern">E-mail is invalid</p>
+        <p class="error" *ngIf="getError('email', 'required')">E-mail is required</p>
+        <p class="error" *ngIf="getError('email', 'pattern')">E-mail is invalid</p>
       </div>
       <div class="input-container">
         <input
@@ -29,19 +29,19 @@
           name="password"
           placeholder="Password"
           formControlName="password"
-          [class.invalid]="(isError | async)?.password"
+          [class.invalid]="isError('password')"
         >
-        <p class="error" *ngIf="(isError | async)?.password?.required">Password is required</p>
-        <p class="error" *ngIf="(isError | async)?.password?.pattern">
+        <p class="error" *ngIf="getError('password', 'required')">Password is required</p>
+        <p class="error" *ngIf="getError('password', 'pattern')">
           Password must be at least 6 characters long and contain at least 1 number, 1 lowercase letter and 1 uppercase letter
         </p>
       </div>
-      <div *ngIf="(errors | async).length" class="height-auto">
-        <div *ngFor="let error of (errors | async)" class="height-auto">
+      <div *ngIf="errors.length" class="height-auto">
+        <div *ngFor="let error of errors" class="height-auto">
           <p class="error">{{ error }}</p>
         </div>
       </div>
-      <input type="submit" value="Submit" class="submit-button" (click)="onSubmit$.next($event)">
+      <input type="submit" value="Submit" class="submit-button" (click)="onSubmit($event)">
     </form>
   </div>
 

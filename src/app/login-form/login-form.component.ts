@@ -20,43 +20,45 @@ function convertErrors(controls) {
   styleUrls: ['./login-form.component.scss'],
 })
 export class LoginFormComponent {
-  public errors: Observable<string[]>;
+  public errors: string[] = [];
   public loginForm: FormGroup;
-  public formSubmitted: Observable<boolean>;
-  public isLogged: Observable<boolean>;
-  public loggedEmail: Observable<string>;
-  public onSubmit$ = new Subject<any>();
-  public isError: any;
-  public isPending: Observable<boolean>;
+  public formSubmitted: boolean = false;
+  public isLogged: boolean;
+  public loggedEmail: string;
+  public isPending: boolean;
 
   constructor(
-    store: Store<AppState>,
+    private store: Store<AppState>,
     fb: FormBuilder,
   ) {
-    const authStore = store.select('auth');
-    this.errors = authStore.pluck('errors');
-    this.isLogged = authStore.pluck('isLogged');
-    this.loggedEmail = authStore.pluck('email');
-    this.isPending = authStore.pluck('pending');
+    store.select('auth').subscribe(({ errors, isLogged, email, pending }) => {
+      this.errors = errors;
+      this.isLogged = isLogged;
+      this.loggedEmail = email;
+      this.isPending = pending;
+    });
 
     this.loginForm = fb.group({
       email: ['', [Validators.required, Validators.pattern(emailRegex)] ],
       password: ['', [Validators.required, Validators.pattern(passwordRegex)] ],
     });
 
-    this.formSubmitted = this.onSubmit$.mapTo(true);
+  }
 
-    this.onSubmit$
-      .filter(() => this.loginForm.valid)
-      .withLatestFrom(this.loginForm.valueChanges, (_, formValue) => formValue)
-      .map(formValue => login({ user: formValue }))
-      .subscribe(store.dispatch.bind(store));
+  onSubmit() {
+    this.formSubmitted = true;
+    if (this.loginForm.valid) {
+      this.store.dispatch(login({ user: this.loginForm.value }));
+    }
+  }
 
-    this.isError = this.loginForm.valueChanges
-      .startWith(null)
-      .combineLatest(this.formSubmitted)
-      .map(() => convertErrors(this.loginForm.controls));
+  isError(label: string): boolean {
+    return this.formSubmitted && !!this.loginForm.controls[label].errors;
+  }
 
+  getError(label: string, errorName: string): boolean {
+    return this.isError(label) &&
+      !!this.loginForm.controls[label].errors[errorName];
   }
 
 }
