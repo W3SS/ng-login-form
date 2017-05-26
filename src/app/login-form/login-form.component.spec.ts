@@ -2,12 +2,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginFormComponent } from './login-form.component';
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import {DebugElement, NO_ERRORS_SCHEMA} from "@angular/core";
 import { Store } from "@ngrx/store";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { By } from "@angular/platform-browser";
 import {login} from "../authentication.actions";
-import { map, path, pipe, curry, __, head } from 'ramda';
+import { map, path, pipe } from 'ramda';
 
 describe('LoginFormComponent', () => {
   let component: LoginFormComponent;
@@ -23,19 +23,26 @@ describe('LoginFormComponent', () => {
     dispatch: jasmine.createSpy('dispatch'),
   };
 
-  const getAllByCss = curry(
-    (selector: string) =>
-      (fixture: ComponentFixture<LoginFormComponent>) =>
-        fixture
-          .debugElement
-          .queryAll(By.css(selector))
-  );
+  const getAllByCss = (selector: string) =>
+    (fixture: ComponentFixture<LoginFormComponent>): DebugElement[] =>
+      fixture
+        .debugElement
+        .queryAll(By.css(selector));
 
-  const getByCss = head(getAllByCss(__, __))
+  const getByCss = (selector: string) =>
+    (fixture: ComponentFixture<LoginFormComponent>): DebugElement =>
+      fixture
+        .debugElement
+        .query(By.css(selector));
 
   const getErrors = getAllByCss('.height-auto .error');
-  const getInput = getByCss('input[type="submit"]');
-  const getTextContent = map(path(['nativeElement', 'textContent']));
+  const getSubmitInput = getByCss('input[type="submit"]');
+  const getEmailInput = getByCss(`input[name="email"]`);
+  const getEmailError = getByCss(`input[name="email"] + .error`);
+  const getTextContent = path(['nativeElement', 'textContent']);
+  const triggerClick = (element: DebugElement) => element.triggerEventHandler('click', new Event('click'));
+  const triggerInput = (value) => (element: DebugElement) => element.triggerEventHandler('input', { target: { value } });
+  const hasClass = (className: string) => (element: DebugElement) => element.nativeElement.classList.contains(className);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -62,7 +69,7 @@ describe('LoginFormComponent', () => {
   it('should get errors from store', () => {
     const errors = pipe(
       getErrors,
-      getTextContent
+      map(getTextContent)
     )(fixture);
 
     authStore.errors.forEach(errorText => expect(errors.includes(errorText)).toBeTruthy());
@@ -70,26 +77,30 @@ describe('LoginFormComponent', () => {
 
   describe('when submit button is clicked', () => {
     beforeEach(() => {
-      getInput.triggerEventHandler('click', new Event('click'));
+      pipe(
+        getSubmitInput,
+        triggerClick
+      )(fixture);
+
       fixture.detectChanges();
     });
 
     it('should show error "E-mail is required" under email input', () => {
-      const error = fixture
-        .debugElement
-        .query(By.css(`input[name="email"] + .error`))
-        .nativeElement.textContent;
+      const error = pipe(
+        getEmailError,
+        getTextContent
+      )(fixture);
 
       expect(error).toBe('E-mail is required');
     });
 
     it('should add invalid class to email input', () => {
-      const input = fixture
-        .debugElement
-        .query(By.css(`input[name="email"]`))
-        .nativeElement;
+      const hasEmailInvalidClass = pipe(
+        getEmailInput,
+        hasClass('invalid')
+      )(fixture);
 
-      expect(input.classList.contains('invalid')).toBeTruthy();
+      expect(hasEmailInvalidClass).toBeTruthy();
     });
 
     it('should show error "Password is required" under password input', () => {
@@ -114,11 +125,10 @@ describe('LoginFormComponent', () => {
   describe('when wrong email is typed and submit button is clicked', () => {
     ['asd', 'asd@', 'asd@asd'].forEach(value => {
       beforeEach(() => {
-        const input = fixture
-          .debugElement
-          .query(By.css(`input[name="email"]`));
-        input.nativeElement.value = value;
-        input.triggerEventHandler('input', { target: { value } });
+        pipe(
+          getEmailInput,
+          triggerInput(value)
+        )(fixture);
         fixture.debugElement.queryAll(By.css('input[type="submit"]'))[0].triggerEventHandler('click', new Event('click'));
         fixture.detectChanges();
       });

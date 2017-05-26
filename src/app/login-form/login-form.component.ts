@@ -22,12 +22,13 @@ function convertErrors(controls) {
 export class LoginFormComponent {
   public errors: Observable<string[]>;
   public loginForm: FormGroup;
-  public formSubmitted: Observable<boolean>;
   public isLogged: Observable<boolean>;
   public loggedEmail: Observable<string>;
-  public onSubmit$ = new Subject<any>();
-  public isError: any;
   public isPending: Observable<boolean>;
+  public isError: Observable<boolean>;
+  public onSubmit$ = new Subject<any>();
+
+  private formSubmitted: Observable<boolean>;
 
   constructor(
     store: Store<AppState>,
