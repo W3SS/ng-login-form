@@ -1,14 +1,14 @@
 <div class="container">
 
-  <div *ngIf="isLogged | async" class="logged-in">
-    <div> {{ loggedEmail | async }} Login successful. </div>
+  <div *ngIf="isLogged" class="logged-in">
+    <div> {{ loggedEmail }} Login successful. </div>
   </div>
 
-  <div *ngIf="isPending | async" class="loading-container">
+  <div *ngIf="isPending" class="loading-container">
     <app-loading-spinner></app-loading-spinner>
   </div>
 
-  <div *ngIf="!(isLogged | async)" [class.pending]="isPending | async">
+  <div *ngIf="!(isLogged)" [class.pending]="isPending">
     <form [formGroup]="loginForm" novalidate>
       <h2>Login</h2>
       <div class="input-container">

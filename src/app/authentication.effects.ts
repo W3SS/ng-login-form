@@ -12,7 +12,7 @@ export class AuthenticationEffects {
     .ofType(LOGIN_START)
     .map(toPayload)
     .pluck('user')
-    .debounceTime(5000)
+    .debounceTime(1000)
     .map(({ email, password }) =>
       email === 'test@test.pl' && password === 'Password1' ?
       loginSuccess({ email }) :
